@@ -2,7 +2,8 @@
   "name": "server",
   "version": "1.0.0",
   "main": "server.js",
-  "start": "nodemon server.js",
+  "start": "concurrently --kill-others-on-fail \"nodemon server.js\" \"cd ./client && npm start\""
+,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,6 +12,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "concurrently": "^9.1.0",
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "mongoose": "^8.8.4"
