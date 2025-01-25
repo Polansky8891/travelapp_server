@@ -25,7 +25,7 @@ app.use(cors());
 app.use('/cities', citiesRouter);
 app.use('/itineraries', itinerariesRouter);
 
-const db = 'mongodb+srv://pol8891:Mutenroshi8891...@cluster0.9rxpz.mongodb.net/MYtinerary?retryWrites=true&w=majority';
+const db = 'mongodb+srv://pol8891:dw5gVQGkXuKZwsR7@cluster0.9rxpz.mongodb.net/MYtinerary?retryWrites=true&w=majority';
 
 mongoose
   .connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
