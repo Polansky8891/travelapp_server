@@ -56,5 +56,51 @@ mongoose
     }
   });
 
+  app.post('/cities/add', async (req, res) => {
+    try {
+      console.log("Received data:", req.body); // verificamos los datos que enviamos
+
+      // creamos una nueva ciudad con los datos del body
+      const newCity = new cityModel({
+        name: req.body.name,
+        country: req.body.country
+      });
+
+      // guardar en la base de datos
+      await newCity.save();
+
+      res.status(201).json({ message: "City added successfully", city: newCity });
+    } catch (error) {
+      console.error("Error adding city:", error);
+      res.status(500).json({ error: "Failed to add city", details: error.message });
+    }
+  });
+
+  app.post('/itineraries/add', async (req, res) => {
+    try {
+      console.log("Received data:", req.body); // verificamos los datos que enviamos
+
+      // creamos un nuevo itinerario con los datos del body
+      const newItinerary = new itineraryModel({
+        name: req.body.name,
+        imageUrl: req.body.imageUrl,
+        city: req.body.city,
+        country: req.body.country,
+        days: req.body.days,
+        type: req.body.type,
+        difficulty: req.body.difficulty,
+        price: req.body.price
+      });
+
+      // guardar en la base de datos
+      await newItinerary.save();
+
+      res.status(201).json({ message: "Itinerary added successfully", itinerary: newItinerary });
+    } catch (error) {
+      console.error("Error adding itinerary:", error);
+      res.status(500).json({ error: "Failed to add itinerary", details: error.message });
+    }
+  });
+
 
   
