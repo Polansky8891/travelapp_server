@@ -37,5 +37,23 @@ router.post('/', (req, res) => {
         });
 });
 
+/* delete an itinerary by ID */
+router.delete('/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const deletedItinerary = await itineraryModel.findByIdAndDelete(id);
+
+        if (!deletedItinerary) {
+            return res.status(404).json({ error: "Itinerary not found" });
+        }
+
+        res.status(200).json({ message: "Itinerary deleted successfully", itinerary: deletedItinerary});
+    } catch (error) {
+        console.error("Error deleting itinerary:", error);
+        res.status(500).json({ error: "Failed to delete itinerary", details: error.message });
+    }
+});
+
 
 module.exports = router;
