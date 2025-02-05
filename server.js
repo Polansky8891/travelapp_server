@@ -1,11 +1,11 @@
 const express = require('express');
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const citiesRouter = require('./routes/cities');
+const citiesRouter = require('./src/routes/cities');
 const mongoose = require('mongoose');
-const itinerariesRouter = require('./routes/itineraries');
-const cityModel = require('./model/cityModel');
-const itineraryModel = require('./model/itineraryModel');
+const itinerariesRouter = require('./src/routes/itineraries');
+const cityModel = require('./src/model/cityModel');
+const itineraryModel = require('./src/model/itineraryModel');
 
 const app = express();
 const port = 5000;
@@ -18,8 +18,7 @@ app.use(
 );
 app.use(cors());
 
-app.use('/cities', citiesRouter);
-app.use('/itineraries', itinerariesRouter);
+
 
 const db = 'mongodb+srv://pol8891:dw5gVQGkXuKZwsR7@cluster0.9rxpz.mongodb.net/MYtinerary?retryWrites=true&w=majority';
 
