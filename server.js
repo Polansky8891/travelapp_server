@@ -10,8 +10,6 @@ const itineraryModel = require('./model/itineraryModel');
 const app = express();
 const port = 5000;
 
-
-
 app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({
@@ -19,8 +17,6 @@ app.use(
   })
 );
 app.use(cors());
-
-
 
 app.use('/cities', citiesRouter);
 app.use('/itineraries', itinerariesRouter);
@@ -35,90 +31,76 @@ mongoose
   })
   .catch(err => console.error('MongoDB connection error:', err));
 
+app.get('/cities/all', async (req, res) => {
+  try {
+    const cities = await cityModel.find();
+    res.status(200).json(cities);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching cities.' });
+  }
+});
 
+app.get('/itineraries/all', async (req, res) => {
+  try {
+    const itineraries = await itineraryModel.find();
+    res.status(200).json(itineraries);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching itineraries.' });
+  }
+});
 
+app.post('/cities/add', async (req, res) => {
+  try {
+    console.log("Received data:", req.body);
+    
+    const newCity = new cityModel({
+      name: req.body.name,
+      country: req.body.country
+    });
 
-  app.get('/cities/all', async (req, res) => {
-    try {
-      const cities = await cityModel.find();
-      res.status(200).json(cities); 
-    } catch (error) {
-      res.status(500).json({ error: 'Error fetching cities.' });
+    await newCity.save();
+    res.status(201).json({ message: "City added successfully", city: newCity });
+  } catch (error) {
+    console.error("Error adding city:", error);
+    res.status(500).json({ error: "Failed to add city", details: error.message });
+  }
+});
+
+app.post('/itineraries/add', async (req, res) => {
+  try {
+    console.log("Received data:", req.body);
+    
+    const newItinerary = new itineraryModel({
+      name: req.body.name,
+      imageUrl: req.body.imageUrl,
+      city: req.body.city,
+      country: req.body.country,
+      days: req.body.days,
+      type: req.body.type,
+      difficulty: req.body.difficulty,
+      price: req.body.price
+    });
+
+    await newItinerary.save();
+    res.status(201).json({ message: "Itinerary added successfully", itinerary: newItinerary });
+  } catch (error) {
+    console.error("Error adding itinerary:", error);
+    res.status(500).json({ error: "Failed to add itinerary", details: error.message });
+  }
+});
+
+app.delete('/itineraries/delete/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedItinerary = await itineraryModel.findByIdAndDelete(id);
+    
+    if (!deletedItinerary) {
+      return res.status(404).json({ error: "Itinerary not found" });
     }
-  });
-
-  app.get('/itineraries/all', async (req, res) => {
-    try {
-      const itineraries = await itineraryModel.find();
-      res.status(200).json(itineraries); 
-    } catch (error) {
-      res.status(500).json({ error: 'Error fetching itineraries.' });
-    }
-  });
-
-  app.post('/cities/add', async (req, res) => {
-    try {
-      console.log("Received data:", req.body); // verificamos los datos que enviamos
-
-      // creamos una nueva ciudad con los datos del body
-      const newCity = new cityModel({
-        name: req.body.name,
-        country: req.body.country
-      });
-
-      // guardar en la base de datos
-      await newCity.save();
-
-      res.status(201).json({ message: "City added successfully", city: newCity });
-    } catch (error) {
-      console.error("Error adding city:", error);
-      res.status(500).json({ error: "Failed to add city", details: error.message });
-    }
-  });
-
-  app.post('/itineraries/add', async (req, res) => {
-    try {
-      console.log("Received data:", req.body); // verificamos los datos que enviamos
-
-      // creamos un nuevo itinerario con los datos del body
-      const newItinerary = new itineraryModel({
-        name: req.body.name,
-        imageUrl: req.body.imageUrl,
-        city: req.body.city,
-        country: req.body.country,
-        days: req.body.days,
-        type: req.body.type,
-        difficulty: req.body.difficulty,
-        price: req.body.price
-      });
-
-      // guardar en la base de datos
-      await newItinerary.save();
-
-      res.status(201).json({ message: "Itinerary added successfully", itinerary: newItinerary });
-    } catch (error) {
-      console.error("Error adding itinerary:", error);
-      res.status(500).json({ error: "Failed to add itinerary", details: error.message });
-    }
-  });
-
-  app.delete('/itineraries/delete/:id', async (req, res) => {
-    try {
-      const { id } = req.params;
-
-      // buscar y eliminar el itinerario por Id
-      const deletedItinerary = await itineraryModel.findByIdAndDelete(id);
-
-      if (!deletedItinerary) {
-        return res.status(404).json({ error: "Itinerary not found" });
-      }
-
-      res.status(200).json({ message: "Itinerary deleted successfully", itinerary: deletedItinerary });
-    } catch (error) {
-      console.error("Error deleting itinerary:", error);
-      res.status(500).json({ error: "Failed to deleted itinerary", details: error.message });
-    }
-  });
-
-
-  
+    
+    res.status(200).json({ message: "Itinerary deleted successfully", itinerary: deletedItinerary });
+  } catch (error) {
+    console.error("Error deleting itinerary:", error);
+    res.status(500).json({ error: "Failed to delete itinerary", details: error.message });
+  }
+});
